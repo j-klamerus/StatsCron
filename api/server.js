@@ -1,14 +1,15 @@
 // my-react-app-backend/server.js
-import chromium from '@sparticuz/chromium';
 import dotenv from 'dotenv';
+dotenv.config({ path: '../.env' });
+import chromium from '@sparticuz/chromium';
 import { MongoClient } from 'mongodb';
 import puppeteer from 'puppeteer-core';
 //import puppeteerCore from 'puppeteer-core';
 import puppeteerExtra from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-dotenv.config(); // Load environment variables from .env
 
-const playerIDS = [
+export  async function GET(request) {
+  const playerIDS = [
     ['76561199005990640', 'george'],
      ['76561198134691223', 'kaleb'],
       ['76561198255308115', 'kyle'],
@@ -20,11 +21,9 @@ const playerIDS = [
 
 puppeteerExtra.use(StealthPlugin());
 
-export const dynamic = 'force-dynamic'; // Crucial for Vercel Cron
-
 let client;
  if (!process.env.MONGODB_URI) {
-      throw new Error('MONGODB_URI environment variable is not set.');
+     throw new Error('MONGODB_URI environment variable is not set.');
     }
     client = new MongoClient(process.env.MONGODB_URI);
     await client.connect();
@@ -42,6 +41,8 @@ let client;
             console.log(`No stats found for ${playerIDS[i][1]}.`);
         }
     }
+  return new Response('Hello from the server!');
+}
 
 async function getdata(playerID) {
   let browser;
